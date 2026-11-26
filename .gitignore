@@ -13,4 +13,5 @@ infra/*.local.bicepparam
 
 # Internal notes & artifacts
 NOTES.md
+*.local.md
 *.zip
