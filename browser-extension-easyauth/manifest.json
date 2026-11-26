@@ -5,7 +5,6 @@
   "description": "既存の業務 Web システムに無改修でアドオンし、Entra ID (Easy Auth) 認証のもと Foundry Agent (File Search / Work IQ) で業務操作・起票を支援するブラウザ拡張機能",
   "permissions": [
     "sidePanel",
-    "activeTab",
     "tabs",
     "scripting",
     "storage",
@@ -14,8 +13,12 @@
   "host_permissions": [
     "https://login.microsoftonline.com/*",
     "https://*.azurewebsites.net/*",
-    "http://127.0.0.1/*",
-    "http://localhost/*"
+    "http://127.0.0.1:3001/*",
+    "http://127.0.0.1:3002/*",
+    "http://127.0.0.1:8765/*",
+    "http://localhost:3001/*",
+    "http://localhost:3002/*",
+    "http://localhost:8765/*"
   ],
   "background": {
     "service_worker": "background.js"

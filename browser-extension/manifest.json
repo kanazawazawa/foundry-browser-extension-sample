@@ -5,14 +5,17 @@
   "description": "既存の業務 Web システムに無改修でアドオンし、Microsoft Foundry Agent (File Search) の社内規程・マニュアルに基づいて画面操作・起票を支援するブラウザ拡張機能",
   "permissions": [
     "sidePanel",
-    "activeTab",
     "tabs",
     "scripting",
     "storage"
   ],
   "host_permissions": [
-    "http://127.0.0.1/*",
-    "http://localhost/*",
+    "http://127.0.0.1:3001/*",
+    "http://127.0.0.1:3002/*",
+    "http://127.0.0.1:8765/*",
+    "http://localhost:3001/*",
+    "http://localhost:3002/*",
+    "http://localhost:8765/*",
     "https://*.azurewebsites.net/*"
   ],
   "background": {

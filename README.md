@@ -70,6 +70,8 @@ agent-backend\.venv\Scripts\python -m uvicorn bridge_server:app --app-dir agent-
 
 サイドパネルで対象エージェントを選び、「`明日、大阪へ出張します`」や「`1泊2日に変更してください`」と送信すると、各社マニュアルの規程（出発駅、指定手配区分、運賃、日当、金額閾値に応じた決裁ルート等）に沿って起票内容が反映されます。
 
+> **誤送信防止（対象サイト制限）**: 拡張機能は `activeTab` 権限を持たず、許可された業務アプリ（既定では `localhost:3001` / `3002`、`127.0.0.1:3001` / `3002`、`https://*.azurewebsites.net`、ただし中継 API 自体は除外）以外のタブでは画面スキャン・AI 送信・入力欄を自動ブロックします（設定・サインイン用のサイドパネル表示のみ可能です）。ローカルの `config.local.json`（`.gitignore` 対象）に `"allowedOrigins": ["https://<対象FQDN>"]` を指定すると、さらに特定の業務アプリ FQDN のみに限定できます。
+
 ## 認証構成のバリエーションと Azure デプロイ（任意）
 
 中継 API を Azure App Service に配置する場合は、[infra/main.bicep](infra/main.bicep)（パラメータ例は [infra/main.bicepparam.example](infra/main.bicepparam.example)）を使用できます。用途に応じて2つの構成を用意しています。

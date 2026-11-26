@@ -1,10 +1,15 @@
+const { DEFAULT_ALLOWED_TARGET_ORIGINS, normalizeAllowedOrigins, isAllowedTargetUrl } =
+  globalThis.FoundryTargetGuard;
+
 let bridgeUrl = "";
 let tenantId = "";
 let clientId = "";
 let localDefaults = {};
+let allowedTargetOrigins = [...DEFAULT_ALLOWED_TARGET_ORIGINS];
 let authSession = null; // { accessToken, refreshToken, expiresAt, userEmail, userName }
 let agentsList = [];
-let currentScan = { pageContext: null, formFields: [], tabId: null };
+let isSubmitting = false;
+let currentScan = { pageContext: null, formFields: [], tabId: null, allowed: false, url: "" };
 const conversationMap = new Map();
 
 const projectStatusText = document.getElementById("projectStatusText");
@@ -36,6 +41,19 @@ const resetConvBtn = document.getElementById("resetConvBtn");
 const chatForm = document.getElementById("chatForm");
 const promptInput = document.getElementById("promptInput");
 const sendBtn = document.getElementById("sendBtn");
+
+const DEFAULT_PROMPT_PLACEHOLDER = promptInput.placeholder;
+const BLOCKED_PROMPT_PLACEHOLDER = "🔒 許可された業務アプリのタブを開くと入力できます";
+
+function updateComposerAvailability() {
+  const blocked = !currentScan.allowed;
+  promptInput.disabled = blocked;
+  promptInput.placeholder = blocked ? BLOCKED_PROMPT_PLACEHOLDER : DEFAULT_PROMPT_PLACEHOLDER;
+  sendBtn.disabled = blocked || isSubmitting;
+  document.querySelectorAll(".chip").forEach((chip) => {
+    chip.disabled = blocked;
+  });
+}
 
 function getRedirectUri() {
   return chrome.identity.getRedirectURL("callback");
@@ -352,6 +370,7 @@ async function loadSettings() {
   bridgeUrl = (stored.entraBridgeUrl || localDefaults.bridgeUrl || "").replace(/\/+$/, "");
   tenantId = (stored.entraTenantId || localDefaults.tenantId || "").trim();
   clientId = (stored.entraClientId || localDefaults.clientId || "").trim();
+  allowedTargetOrigins = normalizeAllowedOrigins(localDefaults.allowedOrigins);
   authSession = stored.entraAuthSession || null;
 
   bridgeUrlInput.value = bridgeUrl;
@@ -448,11 +467,20 @@ async function sendMessageToActiveTab(tabId, payload) {
 async function scanActiveTab() {
   try {
     const [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
-    if (!tab || !tab.id || !tab.url || /^(chrome|edge|about|chrome-extension):/.test(tab.url)) {
-      currentScan = { pageContext: null, formFields: [], tabId: tab?.id || null };
-      tabScanDot.className = "dot warn";
-      tabSummaryText.textContent = "Webアプリのタブを開いてください";
-      setPreviewMessage("対象外のシステムページです");
+    if (!tab || !tab.id || !isAllowedTargetUrl(tab.url, allowedTargetOrigins, bridgeUrl)) {
+      currentScan = {
+        pageContext: null,
+        formFields: [],
+        tabId: tab?.id || null,
+        allowed: false,
+        url: tab?.url || "",
+      };
+      tabScanDot.className = "dot blocked";
+      tabSummaryText.textContent = "🔒 許可対象外のサイト（操作ブロック中）";
+      setPreviewMessage(
+        "誤送信防止のため、許可された業務アプリ以外のタブでは画面スキャン・AI送信を無効にしています。"
+      );
+      updateComposerAvailability();
       updateConvBadge();
       return currentScan;
     }
@@ -466,6 +494,8 @@ async function scanActiveTab() {
       tabId: tab.id,
       pageContext: res.pageContext,
       formFields: res.formFields || [],
+      allowed: true,
+      url: tab.url || "",
     };
 
     const count = currentScan.formFields.length;
@@ -478,13 +508,16 @@ async function scanActiveTab() {
       li.textContent = `${f.label} (${f.fieldKey} / ${f.type})`;
       fieldsPreviewList.appendChild(li);
     }
+    updateComposerAvailability();
     updateConvBadge();
     return currentScan;
   } catch (err) {
+    currentScan = { pageContext: null, formFields: [], tabId: null, allowed: false, url: "" };
     tabScanDot.className = "dot warn";
     tabSummaryText.textContent = "このタブのフォームを解析できません";
     setPreviewMessage(String(err));
-    return { pageContext: null, formFields: [], tabId: null };
+    updateComposerAvailability();
+    return currentScan;
   }
 }
 
@@ -617,12 +650,14 @@ function appendAgentResponseCard(apiRes, fillRes) {
     reapplyBtn.textContent = "⚡ 現在の画面にもう一度反映する";
     reapplyBtn.addEventListener("click", async () => {
       const latest = await scanActiveTab();
-      if (latest.tabId) {
-        await sendMessageToActiveTab(latest.tabId, {
-          type: "APPLY_VALUES",
-          fieldValues: apiRes.fieldValues,
-        });
+      if (!latest.allowed || !latest.tabId) {
+        appendErrorCard("許可対象外のサイトのため再反映をブロックしました。");
+        return;
       }
+      await sendMessageToActiveTab(latest.tabId, {
+        type: "APPLY_VALUES",
+        fieldValues: apiRes.fieldValues,
+      });
     });
     card.appendChild(reapplyBtn);
   }
@@ -690,6 +725,12 @@ async function handleSubmitPrompt(userText, previousResponseId = null, skipUserB
   }
 
   const scan = await scanActiveTab();
+  if (!scan.allowed) {
+    appendErrorCard(
+      "許可対象外のサイトのため送信をブロックしました。許可された業務アプリのタブを開いてください。"
+    );
+    return;
+  }
   if (!scan.tabId || scan.formFields.length === 0) {
     appendErrorCard("現在のタブに入力可能なフォーム項目が見つかりませんでした。経費申請Webアプリのタブを開いてください。");
     return;
@@ -699,7 +740,8 @@ async function handleSubmitPrompt(userText, previousResponseId = null, skipUserB
     appendUserBubble(trimmed);
     promptInput.value = "";
   }
-  sendBtn.disabled = true;
+  isSubmitting = true;
+  updateComposerAvailability();
 
   const loadingEl = appendLoadingCard(selectedAgent);
   const convKey = getConvKey();
@@ -747,11 +789,14 @@ async function handleSubmitPrompt(userText, previousResponseId = null, skipUserB
 
     let fillRes = null;
     if (data.fieldValues && Object.keys(data.fieldValues).length > 0) {
-      fillRes = await sendMessageToActiveTab(scan.tabId, {
-        type: "APPLY_VALUES",
-        fieldValues: data.fieldValues,
-      });
-      await scanActiveTab();
+      const targetTab = await chrome.tabs.get(scan.tabId).catch(() => null);
+      if (targetTab && isAllowedTargetUrl(targetTab.url, allowedTargetOrigins, bridgeUrl)) {
+        fillRes = await sendMessageToActiveTab(scan.tabId, {
+          type: "APPLY_VALUES",
+          fieldValues: data.fieldValues,
+        });
+        await scanActiveTab();
+      }
     }
 
     loadingEl.remove();
@@ -760,8 +805,11 @@ async function handleSubmitPrompt(userText, previousResponseId = null, skipUserB
     loadingEl.remove();
     appendErrorCard(err.message || String(err));
   } finally {
-    sendBtn.disabled = false;
-    promptInput.focus();
+    isSubmitting = false;
+    updateComposerAvailability();
+    if (!promptInput.disabled) {
+      promptInput.focus();
+    }
   }
 }
 
@@ -780,7 +828,7 @@ saveSettingsBtn.addEventListener("click", async () => {
   });
   settingsPanel.classList.add("hidden");
   updateAuthUi();
-  await fetchHealthAndAgents();
+  await Promise.all([fetchHealthAndAgents(), scanActiveTab()]);
 });
 
 signInBtn.addEventListener("click", () => signInWithEntra(true));
@@ -827,7 +875,7 @@ chrome.tabs.onActivated.addListener(() => {
 });
 
 chrome.tabs.onUpdated.addListener((_tabId, changeInfo) => {
-  if (changeInfo.status === "complete") {
+  if (changeInfo.url || changeInfo.status === "complete") {
     setTimeout(scanActiveTab, 150);
   }
 });
