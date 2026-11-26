@@ -1,0 +1,15 @@
+using './main.bicep'
+
+param appServicePlanResourceGroup = 'rg-appservice-plan'
+param appServicePlanName = 'plan-linux-demo'
+param foundryResourceGroup = 'rg-foundry'
+param foundryAccountName = 'foundry-example'
+param foundryProjectEndpoint = 'https://foundry-example.services.ai.azure.com/api/projects/proj-browser-ext'
+param modelDeploymentName = 'gpt-5.4-mini'
+
+// Optional: deploy Entra ID Easy Auth Bridge Web App as well
+param entraTenantId = ''
+param entraClientId = ''
+param allowedOrigins = [
+  // 'chrome-extension://<your-32-char-extension-id>'
+]

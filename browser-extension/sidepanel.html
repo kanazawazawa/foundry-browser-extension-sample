@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Foundry Form Copilot</title>
+  <link rel="stylesheet" href="sidepanel.css" />
+</head>
+<body>
+  <header class="sp-header">
+    <div class="sp-brand">
+      <img src="icons/icon48.png" alt="" class="sp-logo" />
+      <div>
+        <div class="sp-title">Foundry Form Copilot</div>
+        <div class="sp-subtitle" id="projectStatusText">接続確認中...</div>
+      </div>
+    </div>
+    <button id="toggleSettingsBtn" class="icon-btn" title="接続設定">⚙️</button>
+  </header>
+
+  <section id="settingsPanel" class="settings-panel hidden">
+    <div class="settings-field">
+      <label for="demoKeyInput">🔑 デモ用合言葉（アクセスキー）</label>
+      <input type="password" id="demoKeyInput" placeholder="合言葉を入力してください" autocomplete="off" />
+    </div>
+    <div class="settings-field">
+      <label for="bridgeUrlInput">Foundry ブリッジ API URL</label>
+      <div class="settings-row">
+        <input type="text" id="bridgeUrlInput" placeholder="http://127.0.0.1:8765 または App Service URL" />
+        <button id="saveBridgeBtn" class="small-btn">保存して接続</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="control-card">
+    <div class="control-header">
+      <label for="agentSelect">🤖 接続先 Foundry Agent</label>
+      <button id="refreshAgentsBtn" class="text-btn" title="FoundryからAgent一覧を再取得">🔄 再取得</button>
+    </div>
+    <select id="agentSelect">
+      <option value="">読み込み中...</option>
+    </select>
+    <div class="agent-meta" id="agentMetaText">File Search マニュアル情報を取得中...</div>
+
+    <div class="tab-inspector">
+      <div class="tab-info">
+        <span class="dot" id="tabScanDot"></span>
+        <span id="tabSummaryText">アクティブなタブを解析中...</span>
+      </div>
+      <button id="rescanBtn" class="text-btn">再スキャン</button>
+    </div>
+    <details id="fieldsPreviewBox" class="fields-preview">
+      <summary>検出されたフォーム項目一覧を表示</summary>
+      <ul id="fieldsPreviewList"></ul>
+    </details>
+  </section>
+
+  <main id="chatContainer" class="chat-container">
+    <div class="welcome-card">
+      <div class="welcome-title">社内規程に基づく業務画面 AI 支援</div>
+      <p>
+        開いている業務画面の項目を解析し、選択中の <strong>Foundry Agent（File Search）</strong> に登録されたマニュアル・社内規程に沿って起票内容を構成します。
+      </p>
+      <div class="chips-label">入力例（クリックで入力欄へ）：</div>
+      <div class="chips">
+        <button class="chip" data-prompt="明日、大阪へ出張します">明日、大阪へ出張します</button>
+        <button class="chip" data-prompt="1泊2日に変更してください">1泊2日に変更してください</button>
+        <button class="chip" data-prompt="明後日、名古屋へ日帰り出張します">明後日、名古屋へ日帰り出張します</button>
+        <button class="chip" data-prompt="来週、福岡へ1泊2日で出張します">来週、福岡へ1泊2日で出張します</button>
+      </div>
+    </div>
+  </main>
+
+  <footer class="composer">
+    <div class="composer-toolbar">
+      <span id="convBadge" class="conv-badge">新規会話</span>
+      <button id="resetConvBtn" class="text-btn">🗑 会話をリセット</button>
+    </div>
+    <form id="chatForm" class="composer-row">
+      <textarea
+        id="promptInput"
+        rows="2"
+        placeholder="例：明日、大阪へ出張します（Enterで送信 / Shift+Enterで改行）"
+      ></textarea>
+      <button type="submit" id="sendBtn" class="send-btn">送信</button>
+    </form>
+  </footer>
+
+  <script src="sidepanel.js"></script>
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>大和重工ロジスティクス株式会社 J-Keihi 旅費伝票入力標準手引</title>
+  <style>
+    body {
+      font-family: "MS PGothic", "Meiryo", sans-serif;
+      max-width: 980px;
+      margin: 24px auto;
+      padding: 0 20px 60px;
+      color: #111827;
+      line-height: 1.65;
+      background: #f1f5f9;
+    }
+    header {
+      background: #0f2942;
+      color: #fff;
+      padding: 22px 28px;
+      border-top: 6px solid #c2410c;
+      margin-bottom: 24px;
+    }
+    header .docno {
+      font-size: 12px;
+      color: #cbd5e1;
+      margin-bottom: 6px;
+    }
+    h1 { margin: 0 0 6px; font-size: 22px; letter-spacing: 0.5px; }
+    h2 {
+      background: #e2e8f0;
+      color: #0f2942;
+      padding: 8px 14px;
+      border-left: 6px solid #0f2942;
+      font-size: 17px;
+      margin-top: 28px;
+    }
+    section {
+      background: #fff;
+      border: 1px solid #cbd5e1;
+      padding: 18px 22px;
+      margin-bottom: 18px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+      font-size: 13.5px;
+    }
+    th, td {
+      border: 1px solid #94a3b8;
+      padding: 8px 10px;
+      text-align: left;
+    }
+    th {
+      background: #1e3a5f;
+      color: #fff;
+    }
+    code {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      padding: 1px 5px;
+      font-family: Consolas, monospace;
+      color: #9a3412;
+    }
+    .alert {
+      background: #fef2f2;
+      border: 1px solid #f87171;
+      padding: 10px 14px;
+      margin-top: 12px;
+      font-size: 13.5px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="docno">管理番号：YHI-KEIRI-MAN-088 ／ 経理本部 旅費管理課 通達</div>
+    <h1>大和重工ロジスティクス株式会社「J-Keihi」旅費伝票入力標準手引</h1>
+    <p style="margin:0;font-size:13px;color:#e2e8f0;">対象画面：統合基幹システム J-Keihi ［画面ID: JKH-TRV-010 国内旅費事前伺・仮払伝票］</p>
+  </header>
+
+  <section>
+    <h2>第1章 伝票種別・勘定科目・原価部門コードの設定基準</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>項目名（画面コード）</th>
+          <th>選択・入力値</th>
+          <th>適用条件</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td rowspan="4"><strong>伝票種別コード</strong><br />（<code>JKH_DOC_TYPE</code>）</td>
+          <td><code>T10</code>（T10: 普通旅費仮払・精算）</td>
+          <td>出発日が<strong>申請日の翌日以降</strong>（「明日」「来週」等）の片道100km以上の国内出張。<strong>※翌日出発はT10を選択すること。</strong></td>
+        </tr>
+        <tr>
+          <td><code>T20</code>（T20: 緊急当日出張）</td>
+          <td>出発日が<strong>申請日当日</strong>（「今日これから」等）の緊急国内出張のみ。</td>
+        </tr>
+        <tr>
+          <td><code>T30</code>（T30: 海外渡航申請）</td>
+          <td>海外出張の場合。</td>
+        </tr>
+        <tr>
+          <td><code>K99</code>（K99: 近隣外出交通費）</td>
+          <td>片道100km未満の首都圏近郊移動。</td>
+        </tr>
+        <tr>
+          <td rowspan="3"><strong>勘定科目コード</strong><br />（<code>JKH_KANJO_KAMOKU</code>）</td>
+          <td><code>6120</code>（6120: 旅費交通費・遠隔地）</td>
+          <td>新幹線または航空機を利用する通常の国内出張（デフォルト）。</td>
+        </tr>
+        <tr>
+          <td><code>6180</code>（6180: 会議研修費）</td>
+          <td>社外セミナー・教育研修受講が主目的と明示された場合。</td>
+        </tr>
+        <tr>
+          <td><code>6125</code>（6125: 市内交通費）</td>
+          <td>片道100km未満の在来線移動のみの場合。</td>
+        </tr>
+        <tr>
+          <td rowspan="2"><strong>原価部門コード</strong><br />（<code>JKH_COST_CENTER</code>）</td>
+          <td><code>CC-8810-TYO</code></td>
+          <td>部門指定がない場合の標準値（東京本社 総合営業第一部）。</td>
+        </tr>
+        <tr>
+          <td><code>CC-4420-QA</code></td>
+          <td>工場監査・設備点検・品質管理が目的と明示された場合（品質保証本部）。</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>第2章 方面別の標準用務先・乗車区間・指定手配区分・法人契約運賃</h2>
+    <p>東京本社（丸の内）勤務者の起点は鉄道利用時は<strong>「東京駅」</strong>、航空機利用時は<strong>「羽田空港」</strong>とする。個別取引先名の指定がない場合は、下表の標準用務先拠点および乗車区間表記を一字一句違わず入力すること。</p>
+    <table>
+      <thead>
+        <tr>
+          <th>出張先都道府県（<code>JKH_DEST_PREF</code>）</th>
+          <th>標準用務先拠点（<code>JKH_DEST_DETAIL</code>）</th>
+          <th>標準乗車・搭乗区間表記（<code>JKH_ROUTE_TEXT</code>）</th>
+          <th>手配区分（<code>JKH_TICKET_CLASS</code>）</th>
+          <th>法人契約往復交通費（<code>JKH_TRANS_AMT</code>）</th>
+          <th>一般社員 日当ランク（<code>JKH_PER_DIEM_CLASS</code>）</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>大阪府（値：<code>27</code>）</td>
+          <td><code>大阪製造所（淀川区・新大阪）</code></td>
+          <td><code>東京駅 ⇔ 新大阪駅（東海道新幹線・のぞみ指定席）</code></td>
+          <td>指定旅行代理店・日本ツーリスト手配（<code>CORP_AGENCY</code>）</td>
+          <td><strong>29,040円</strong></td>
+          <td><code>RANK_A</code>（4,200円/日）</td>
+        </tr>
+        <tr>
+          <td>愛知県（値：<code>23</code>）</td>
+          <td><code>名古屋物流センター（港区）</code></td>
+          <td><code>東京駅 ⇔ 名古屋駅（東海道新幹線・のぞみ指定席）</code></td>
+          <td>JR東海スマートEXビズ手配（<code>SMART_EX_BIZ</code>）</td>
+          <td><strong>22,660円</strong></td>
+          <td><code>RANK_B</code>（2,600円/日）</td>
+        </tr>
+        <tr>
+          <td>福岡県（値：<code>40</code>）</td>
+          <td><code>九州ロジスティクス拠点（博多）</code></td>
+          <td><code>羽田空港 ⇔ 福岡空港（法人特約航空券）</code></td>
+          <td>指定旅行代理店・日本ツーリスト手配（<code>CORP_AGENCY</code>）</td>
+          <td><strong>48,400円</strong></td>
+          <td><code>RANK_A</code>（4,200円/日）</td>
+        </tr>
+        <tr>
+          <td>北海道（値：<code>01</code>）</td>
+          <td><code>苫小牧プラント事務所</code></td>
+          <td><code>羽田空港 ⇔ 新千歳空港（法人特約航空券）</code></td>
+          <td>指定旅行代理店・日本ツーリスト手配（<code>CORP_AGENCY</code>）</td>
+          <td><strong>51,000円</strong></td>
+          <td><code>RANK_A</code>（4,200円/日）</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>※役職が「部長」「役員」「管理職」と明示された場合は、日当ランク区分を <code>RANK_S</code>（S区分・管理職：6,000円/日）に変更する。</p>
+  </section>
+
+  <section>
+    <h2>第3章 期間・宿泊定額手当・合計概算金額・決裁ルート自動判定ルール</h2>
+    <ul>
+      <li><strong>期間（自）<code>JKH_START_DT</code> ／ 期間（至）<code>JKH_END_DT</code>：</strong>
+        宿泊指定がない場合（「明日、大阪へ出張」など）は<strong>日帰り（0泊1日）</strong>とし、期間（自）と期間（至）に同一日（翌日）を設定する。
+      </li>
+      <li><strong>宿泊数（<code>JKH_STAY_NIGHTS</code>）：</strong>日帰りは <code>0</code>、1泊2日は <code>1</code>、2泊3日は <code>2</code> を入力する。</li>
+      <li><strong>宿泊定額手当（<code>JKH_STAY_ALLOWANCE</code>）：</strong>当社は実費精算ではなく<strong>完全定額支給制</strong>である。
+        <ul>
+          <li>日帰り（0泊）：<code>0</code> 円</li>
+          <li>宿泊あり：<strong>1泊あたり定額 <code>15,000</code> 円 × 宿泊数</strong>（例：1泊2日＝<code>15000</code>円、2泊3日＝<code>30000</code>円）</li>
+        </ul>
+      </li>
+      <li><strong>合計概算金額（<code>JKH_TOTAL_AMT</code>）の計算式：</strong>
+        <br />
+        <code>合計概算金額 ＝ 法人契約往復交通費 ＋（日当単価 × 旅行日数）＋ 宿泊定額手当</code>
+        <ul>
+          <li>計算例① 大阪・日帰り（0泊1日、一般社員）：29,040円 ＋ (4,200円 × 1日) ＋ 0円 ＝ <strong><code>33240</code> 円</strong></li>
+          <li>計算例② 大阪・1泊2日（一般社員）：29,040円 ＋ (4,200円 × 2日) ＋ 15,000円 ＝ <strong><code>52440</code> 円</strong></li>
+          <li>計算例③ 大阪・2泊3日（一般社員）：29,040円 ＋ (4,200円 × 3日) ＋ 30,000円 ＝ <strong><code>71640</code> 円</strong></li>
+        </ul>
+      </li>
+    </ul>
+    <div class="alert">
+      <strong>【重要】決裁ルートコード（<code>JKH_APPROVAL_ROUTE</code>）の金額連動ルール：</strong><br />
+      算出した「合計概算金額」に応じて、必ず以下の決裁ルートコードを選択すること（誤選択は経理差戻し対象）：
+      <ul style="margin:6px 0 0;">
+        <li>合計概算金額が <strong>50,000円未満</strong> の場合：<code>WF-100</code>（WF-100: 課長決裁［5万円未満］）</li>
+        <li>合計概算金額が <strong>50,000円以上 150,000円未満</strong> の場合：<code>WF-200</code>（WF-200: 部長決裁［5万円以上］）</li>
+        <li>合計概算金額が <strong>150,000円以上</strong> または海外渡航の場合：<code>WF-900</code>（WF-900: 本部長特認）</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>第4章 用務内容・特記事項（<code>JKH_YOMU_NAIYO</code>）の記入書式</h2>
+    <p>用務内容欄には必ず以下の定型フォーマットで積算根拠を明記すること：</p>
+    <p><code>【用務先】&lt;拠点名&gt; 【目的】&lt;用務目的（未指定時は「業務打合せ・現地確認」）&gt; 【積算内訳】交通費:&lt;金額&gt;円＋日当:&lt;単価&gt;円×&lt;日数&gt;日＋宿泊定額:&lt;金額&gt;円＝合計&lt;合計額&gt;円（手引 YHI-KEIRI-MAN-088 準拠）</code></p>
+  </section>
+</body>
+</html>

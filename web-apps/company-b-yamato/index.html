@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>J-Keihi [JKH-TRV-010] 国内旅費事前伺・仮払伝票 | 大和重工ロジスティクス株式会社</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "MS PGothic", "Meiryo", sans-serif;
+      background: #dce3ec;
+      color: #111827;
+      font-size: 13.5px;
+    }
+    .erp-header {
+      background: #0f2942;
+      color: #fff;
+      padding: 8px 18px;
+      border-bottom: 4px solid #c2410c;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .erp-header .sys-name {
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: 0.5px;
+    }
+    .erp-header .meta {
+      font-size: 12px;
+      color: #cbd5e1;
+    }
+    .subbar {
+      background: #1e3a5f;
+      color: #e2e8f0;
+      padding: 6px 18px;
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .wrapper {
+      max-width: 1020px;
+      margin: 16px auto 48px;
+      padding: 0 14px;
+    }
+    .panel {
+      background: #fff;
+      border: 2px solid #64748b;
+      padding: 14px 16px 20px;
+    }
+    .panel-heading {
+      background: #e2e8f0;
+      border: 1px solid #94a3b8;
+      padding: 7px 12px;
+      font-weight: 700;
+      color: #0f2942;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    table.erp-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 14px;
+    }
+    table.erp-table th,
+    table.erp-table td {
+      border: 1px solid #94a3b8;
+      padding: 7px 10px;
+      vertical-align: middle;
+    }
+    table.erp-table th {
+      background: #eef2f6;
+      color: #0f2942;
+      width: 19%;
+      text-align: left;
+      font-weight: 700;
+      font-size: 12.5px;
+    }
+    table.erp-table td {
+      width: 31%;
+      background: #ffffff;
+    }
+    .code-hint {
+      display: block;
+      font-size: 10.5px;
+      color: #64748b;
+      font-weight: normal;
+      font-family: Consolas, monospace;
+    }
+    .req-mark {
+      background: #b91c1c;
+      color: #fff;
+      font-size: 10px;
+      padding: 1px 4px;
+      margin-left: 4px;
+    }
+    input[type="text"],
+    input[type="date"],
+    input[type="number"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 5px 7px;
+      border: 1px solid #64748b;
+      background: #fffef7;
+      font-family: inherit;
+      font-size: 13px;
+      color: #111827;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: 2px solid #0284c7;
+      background: #ffffff;
+    }
+    .radio-inline {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .radio-inline label {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+    .erp-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #cbd5e1;
+      padding-top: 12px;
+      margin-top: 6px;
+    }
+    .wf-badge {
+      font-size: 12.5px;
+      padding: 5px 12px;
+      background: #f1f5f9;
+      border: 1px solid #94a3b8;
+      font-weight: 700;
+    }
+    .btn-group {
+      display: flex;
+      gap: 10px;
+    }
+    button {
+      padding: 7px 18px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid #334155;
+    }
+    .btn-clear {
+      background: #e2e8f0;
+      color: #1e293b;
+    }
+    .btn-exec {
+      background: #0f2942;
+      color: #ffffff;
+      border-color: #0f2942;
+    }
+    .result-banner {
+      display: none;
+      margin-top: 12px;
+      padding: 10px 14px;
+      background: #dcfce7;
+      border: 1px solid #16a34a;
+      color: #14532d;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="erp-header">
+    <div class="sys-name">🏛️ 大和重工ロジスティクス株式会社 ｜ 統合基幹業務システム J-Keihi (Ver 8.4)</div>
+    <div class="meta">画面ID: JKH-TRV-010 ｜ 社員番号: 0048291（東京本社・総合営業第一部）</div>
+  </div>
+  <div class="subbar">
+    <span>メニュー ＞ 経理・旅費管理 ＞ 国内旅費事前伺・仮払伝票入力</span>
+    <span>適用規程：<a href="/manual" target="_blank" rel="noopener noreferrer" style="color:#fde047;font-weight:700;">YHI-KEIRI-MAN-088（入力標準手引を開く）</a></span>
+  </div>
+
+  <div class="wrapper">
+    <div class="panel">
+      <div class="panel-heading">
+        <span>■ 国内旅費事前伺・仮払伝票 起票入力</span>
+        <span id="ruleCheckStatus" style="font-size:12px;color:#475569;">未入力</span>
+      </div>
+
+      <form id="yamatoErpForm">
+        <table class="erp-table">
+          <tbody>
+            <tr>
+              <th>伝票種別コード<span class="req-mark">必須</span><span class="code-hint">JKH_DOC_TYPE</span></th>
+              <td>
+                <select id="JKH_DOC_TYPE" name="JKH_DOC_TYPE" required>
+                  <option value="">▼選択</option>
+                  <option value="T10">T10: 普通旅費仮払・精算（翌日以降出発）</option>
+                  <option value="T20">T20: 緊急当日出張（当日出発のみ）</option>
+                  <option value="T30">T30: 海外渡航申請</option>
+                  <option value="K99">K99: 近隣外出交通費（100km未満）</option>
+                </select>
+              </td>
+              <th>勘定科目コード<span class="req-mark">必須</span><span class="code-hint">JKH_KANJO_KAMOKU</span></th>
+              <td>
+                <select id="JKH_KANJO_KAMOKU" name="JKH_KANJO_KAMOKU" required>
+                  <option value="">▼選択</option>
+                  <option value="6120">6120: 旅費交通費・遠隔地</option>
+                  <option value="6125">6125: 市内交通費</option>
+                  <option value="6180">6180: 会議研修費</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <th>原価部門コード<span class="req-mark">必須</span><span class="code-hint">JKH_COST_CENTER</span></th>
+              <td>
+                <input type="text" id="JKH_COST_CENTER" name="JKH_COST_CENTER" required placeholder="例: CC-8810-TYO" />
+              </td>
+              <th>出張先都道府県<span class="req-mark">必須</span><span class="code-hint">JKH_DEST_PREF</span></th>
+              <td>
+                <select id="JKH_DEST_PREF" name="JKH_DEST_PREF" required>
+                  <option value="">▼選択</option>
+                  <option value="01">01: 北海道</option>
+                  <option value="13">13: 東京都</option>
+                  <option value="23">23: 愛知県</option>
+                  <option value="27">27: 大阪府</option>
+                  <option value="40">40: 福岡県</option>
+                  <option value="99">99: その他</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <th>期間（自）<span class="req-mark">必須</span><span class="code-hint">JKH_START_DT</span></th>
+              <td>
+                <input type="date" id="JKH_START_DT" name="JKH_START_DT" required />
+              </td>
+              <th>期間（至）<span class="req-mark">必須</span><span class="code-hint">JKH_END_DT</span></th>
+              <td>
+                <input type="date" id="JKH_END_DT" name="JKH_END_DT" required />
+              </td>
+            </tr>
+            <tr>
+              <th>用務先拠点・行先詳細<span class="req-mark">必須</span><span class="code-hint">JKH_DEST_DETAIL</span></th>
+              <td>
+                <input type="text" id="JKH_DEST_DETAIL" name="JKH_DEST_DETAIL" required placeholder="例: 大阪製造所（淀川区・新大阪）" />
+              </td>
+              <th>乗車・搭乗区間表記<span class="req-mark">必須</span><span class="code-hint">JKH_ROUTE_TEXT</span></th>
+              <td>
+                <input type="text" id="JKH_ROUTE_TEXT" name="JKH_ROUTE_TEXT" required placeholder="例: 東京駅 ⇔ 新大阪駅（東海道新幹線・のぞみ指定席）" />
+              </td>
+            </tr>
+            <tr>
+              <th>手配区分<span class="req-mark">必須</span><span class="code-hint">JKH_TICKET_CLASS</span></th>
+              <td colspan="3">
+                <div class="radio-inline" role="radiogroup" aria-label="手配区分">
+                  <label><input type="radio" name="JKH_TICKET_CLASS" value="CORP_AGENCY" /> 指定旅行代理店・日本ツーリスト手配 (CORP_AGENCY)</label>
+                  <label><input type="radio" name="JKH_TICKET_CLASS" value="SMART_EX_BIZ" /> JR東海スマートEXビズ手配 (SMART_EX_BIZ)</label>
+                  <label><input type="radio" name="JKH_TICKET_CLASS" value="SELF_PAY" /> 本人立替精算 (SELF_PAY)</label>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <th>法人契約往復交通費（円）<span class="req-mark">必須</span><span class="code-hint">JKH_TRANS_AMT</span></th>
+              <td>
+                <input type="number" id="JKH_TRANS_AMT" name="JKH_TRANS_AMT" min="0" required placeholder="0" />
+              </td>
+              <th>日当ランク区分<span class="req-mark">必須</span><span class="code-hint">JKH_PER_DIEM_CLASS</span></th>
+              <td>
+                <select id="JKH_PER_DIEM_CLASS" name="JKH_PER_DIEM_CLASS" required>
+                  <option value="">▼選択</option>
+                  <option value="RANK_S">RANK_S: S区分・管理職（6,000円/日）</option>
+                  <option value="RANK_A">RANK_A: A区分・一般社員広域（4,200円/日）</option>
+                  <option value="RANK_B">RANK_B: B区分・近郊広域（2,600円/日）</option>
+                  <option value="NONE">NONE: 日当対象外</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <th>宿泊数（泊）<span class="req-mark">必須</span><span class="code-hint">JKH_STAY_NIGHTS</span></th>
+              <td>
+                <input type="number" id="JKH_STAY_NIGHTS" name="JKH_STAY_NIGHTS" min="0" required placeholder="0" />
+              </td>
+              <th>宿泊定額手当（円）<span class="req-mark">必須</span><span class="code-hint">JKH_STAY_ALLOWANCE</span></th>
+              <td>
+                <input type="number" id="JKH_STAY_ALLOWANCE" name="JKH_STAY_ALLOWANCE" min="0" required placeholder="0" />
+              </td>
+            </tr>
+            <tr>
+              <th>合計概算金額（円）<span class="req-mark">必須</span><span class="code-hint">JKH_TOTAL_AMT</span></th>
+              <td>
+                <input type="number" id="JKH_TOTAL_AMT" name="JKH_TOTAL_AMT" min="0" required placeholder="0" />
+              </td>
+              <th>決裁ルートコード<span class="req-mark">必須</span><span class="code-hint">JKH_APPROVAL_ROUTE</span></th>
+              <td>
+                <select id="JKH_APPROVAL_ROUTE" name="JKH_APPROVAL_ROUTE" required>
+                  <option value="">▼選択</option>
+                  <option value="WF-100">WF-100: 課長決裁［5万円未満］</option>
+                  <option value="WF-200">WF-200: 部長決裁［5万円以上15万円未満］</option>
+                  <option value="WF-900">WF-900: 本部長特認［15万円以上・海外］</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <th>用務内容・積算内訳<span class="req-mark">必須</span><span class="code-hint">JKH_YOMU_NAIYO</span></th>
+              <td colspan="3">
+                <textarea id="JKH_YOMU_NAIYO" name="JKH_YOMU_NAIYO" rows="3" required placeholder="【用務先】... 【目的】... 【積算内訳】..."></textarea>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="erp-footer">
+          <div class="wf-badge" id="wfSummaryBadge">決裁判定ステータス：未判定</div>
+          <div class="btn-group">
+            <button type="reset" class="btn-clear" id="erpClearBtn">F4: 入力クリア</button>
+            <button type="submit" class="btn-exec">F12: 伝票起票・決裁回付（モック）</button>
+          </div>
+        </div>
+
+        <div class="result-banner" id="erpResultBanner"></div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function updateErpStatus() {
+      const total = Number(document.getElementById("JKH_TOTAL_AMT").value || 0);
+      const wf = document.getElementById("JKH_APPROVAL_ROUTE").value;
+      const badge = document.getElementById("wfSummaryBadge");
+      const topStatus = document.getElementById("ruleCheckStatus");
+
+      if (!total && !wf) {
+        badge.textContent = "決裁判定ステータス：未判定";
+        badge.style.background = "#f1f5f9";
+        badge.style.color = "#0f1727";
+        topStatus.textContent = "未入力";
+        return;
+      }
+
+      const expectedWf = total >= 150000 ? "WF-900" : total >= 50000 ? "WF-200" : "WF-100";
+      const match = wf === expectedWf;
+      badge.textContent = match
+        ? `✔ 規定整合OK：合計 ¥${total.toLocaleString("ja-JP")} → ${wf}`
+        : `⚠ 決裁コード要確認：合計 ¥${total.toLocaleString("ja-JP")}（推奨: ${expectedWf}）`;
+      badge.style.background = match ? "#dcfce7" : "#fef9c3";
+      badge.style.color = match ? "#166534" : "#854d0e";
+      topStatus.textContent = `入力済（合計 ¥${total.toLocaleString("ja-JP")}）`;
+    }
+
+    ["JKH_TOTAL_AMT", "JKH_APPROVAL_ROUTE", "JKH_TRANS_AMT", "JKH_STAY_ALLOWANCE"].forEach((id) => {
+      const el = document.getElementById(id);
+      el.addEventListener("input", updateErpStatus);
+      el.addEventListener("change", updateErpStatus);
+    });
+
+    document.getElementById("erpClearBtn").addEventListener("click", () => {
+      setTimeout(() => {
+        updateErpStatus();
+        document.getElementById("erpResultBanner").style.display = "none";
+      }, 10);
+    });
+
+    document.getElementById("yamatoErpForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      updateErpStatus();
+      const docType = document.getElementById("JKH_DOC_TYPE").value;
+      const total = Number(document.getElementById("JKH_TOTAL_AMT").value || 0).toLocaleString("ja-JP");
+      const wf = document.getElementById("JKH_APPROVAL_ROUTE").value;
+      const banner = document.getElementById("erpResultBanner");
+      banner.style.display = "block";
+      banner.textContent = `[J-Keihi 伝票番号 #2026-88412] 起票完了（モック）｜伝票種別: ${docType} ／ 合計概算金額: ¥${total} ／ 回付先: ${wf}`;
+    });
+  </script>
+</body>
+</html>

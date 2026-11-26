@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sakura Expense | 株式会社さくらテック 出張・経費事前申請</title>
+  <style>
+    :root {
+      --primary: #db2777;
+      --primary-dark: #be185d;
+      --accent: #7c3aed;
+      --bg: #fdf8fb;
+      --card: #ffffff;
+      --border: #e5e7eb;
+      --text: #1f2937;
+      --muted: #6b7280;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .topbar {
+      background: linear-gradient(90deg, #db2777 0%, #7c3aed 100%);
+      color: #fff;
+      padding: 14px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 10px rgba(124, 58, 237, 0.2);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-logo {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.22);
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+    }
+    .brand-title { font-weight: 700; font-size: 17px; }
+    .brand-sub { font-size: 12px; opacity: 0.88; }
+    .user-pill {
+      background: rgba(255,255,255,0.18);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 12.5px;
+    }
+    .container {
+      max-width: 920px;
+      margin: 28px auto 60px;
+      padding: 0 20px;
+    }
+    .summary-banner {
+      background: linear-gradient(135deg, #fff1f2, #f5f3ff);
+      border: 1px solid #fbcfe8;
+      border-radius: 16px;
+      padding: 18px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 22px;
+    }
+    .summary-banner h1 {
+      margin: 0 0 4px;
+      font-size: 20px;
+      color: #831843;
+    }
+    .summary-banner p {
+      margin: 0;
+      font-size: 13px;
+      color: #6b7280;
+    }
+    .total-box {
+      text-align: right;
+      background: #fff;
+      padding: 10px 18px;
+      border-radius: 12px;
+      border: 1px solid #f9a8d4;
+      min-width: 210px;
+    }
+    .total-box .lbl { font-size: 11.5px; color: var(--muted); }
+    .total-box .val { font-size: 24px; font-weight: 800; color: var(--primary-dark); }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+    }
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #9d174d;
+      margin: 0 0 18px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #fce7f3;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+    }
+    .field {
+      margin-bottom: 16px;
+    }
+    .field:last-child { margin-bottom: 0; }
+    label.field-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #374151;
+    }
+    .req {
+      color: #e11d48;
+      font-size: 11px;
+      margin-left: 4px;
+    }
+    input[type="text"],
+    input[type="date"],
+    input[type="number"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid #d1d5db;
+      border-radius: 10px;
+      font-size: 14px;
+      font-family: inherit;
+      background: #fff;
+      color: var(--text);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(219, 39, 119, 0.14);
+    }
+    .radio-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .radio-card {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 9px 12px;
+      font-size: 13.5px;
+      cursor: pointer;
+      background: #fafafa;
+    }
+    .radio-card:has(input:checked) {
+      border-color: var(--primary);
+      background: #fdf2f8;
+      font-weight: 600;
+      color: #9d174d;
+    }
+    .check-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 14px;
+      border-radius: 10px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      font-size: 13.5px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    button {
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-reset {
+      background: #f3f4f6;
+      color: #374151;
+      border: 1px solid #d1d5db;
+    }
+    .btn-submit {
+      background: linear-gradient(90deg, #db2777, #7c3aed);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(219, 39, 119, 0.28);
+    }
+    .toast {
+      display: none;
+      margin-top: 18px;
+      padding: 16px 20px;
+      border-radius: 12px;
+      background: #ecfdf5;
+      border: 1px solid #6ee7b7;
+      color: #065f46;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-logo">🌸</div>
+      <div>
+        <div class="brand-title">Sakura Expense</div>
+        <div class="brand-sub">株式会社さくらテック クラウド経費・出張ワークフロー</div>
+      </div>
+    </div>
+    <div class="user-pill">ログイン中：佐藤 花子（東京本社・デジタル推進部）</div>
+  </header>
+
+  <main class="container">
+    <div class="summary-banner">
+      <div>
+        <h1>国内・海外出張 事前申請フォーム</h1>
+        <p>社内規定（<a href="/manual" target="_blank" rel="noopener noreferrer" style="color:#be185d;font-weight:600;">SKR-FIN-2026-04 マニュアルを表示</a>）に基づき申請内容を入力してください。</p>
+      </div>
+      <div class="total-box">
+        <div class="lbl">概算申請合計（自動集計）</div>
+        <div class="val" id="grandTotalDisplay">¥0</div>
+      </div>
+    </div>
+
+    <form id="sakuraExpenseForm">
+      <section class="card">
+        <h2 class="card-title">📌 基本スケジュール・訪問先</h2>
+        <div class="grid-2">
+          <div class="field">
+            <label class="field-label" for="tripTitle">申請タイトル（件名）<span class="req">*必須</span></label>
+            <input type="text" id="tripTitle" name="tripTitle" required placeholder="例：【出張申請】関西支社・大阪出張（YYYY/MM/DD）" />
+          </div>
+          <div class="field">
+            <label class="field-label" for="expenseCategory">申請区分<span class="req">*必須</span></label>
+            <select id="expenseCategory" name="expenseCategory" required>
+              <option value="">-- 選択してください --</option>
+              <option value="domestic_day">国内出張（日帰り）</option>
+              <option value="domestic_stay">国内出張（宿泊あり）</option>
+              <option value="local_transport">近距離交通費精算</option>
+              <option value="overseas">海外出張</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label class="field-label" for="departureDate">出発日<span class="req">*必須</span></label>
+            <input type="date" id="departureDate" name="departureDate" required />
+          </div>
+          <div class="field">
+            <label class="field-label" for="returnDate">帰着日<span class="req">*必須</span></label>
+            <input type="date" id="returnDate" name="returnDate" required />
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label class="field-label" for="originStation">出発駅・空港<span class="req">*必須</span></label>
+            <input type="text" id="originStation" name="originStation" required placeholder="例：品川駅 / 羽田空港" />
+          </div>
+          <div class="field">
+            <label class="field-label" for="destinationArea">訪問先エリア・拠点<span class="req">*必須</span></label>
+            <select id="destinationArea" name="destinationArea" required>
+              <option value="">-- 選択してください --</option>
+              <option value="osaka_branch">関西支社・梅田（大阪）</option>
+              <option value="nagoya_office">中部営業所・栄（名古屋）</option>
+              <option value="fukuoka_hub">九州ハブ・博多（福岡）</option>
+              <option value="sapporo_office">北海道営業所・札幌</option>
+              <option value="other_client">その他取引先</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2 class="card-title">🚄 交通手段・概算費用・プロジェクト</h2>
+        <div class="field">
+          <label class="field-label">主要交通手段<span class="req">*必須</span></label>
+          <div class="radio-group" role="radiogroup" aria-label="主要交通手段">
+            <label class="radio-card">
+              <input type="radio" name="transportMode" value="shinkansen_reserved" />
+              新幹線・普通車指定席
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="transportMode" value="shinkansen_green" />
+              新幹線・グリーン車（役員特例）
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="transportMode" value="flight_economy" />
+              航空機・エコノミー
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="transportMode" value="express_train" />
+              在来線特急・その他
+            </label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="check-row" for="useExReservation">
+            <input type="checkbox" id="useExReservation" name="useExReservation" />
+            <span>EX予約法人カードを利用する（東海道・山陽新幹線利用時）</span>
+          </label>
+        </div>
+
+        <div class="grid-3">
+          <div class="field">
+            <label class="field-label" for="roundTripFare">往復交通費見積（円）<span class="req">*必須</span></label>
+            <input type="number" id="roundTripFare" name="roundTripFare" min="0" step="10" placeholder="0" required />
+          </div>
+          <div class="field">
+            <label class="field-label" for="dailyAllowance">出張日当合計（円）<span class="req">*必須</span></label>
+            <input type="number" id="dailyAllowance" name="dailyAllowance" min="0" step="100" placeholder="0" required />
+          </div>
+          <div class="field">
+            <label class="field-label" for="hotelFee">宿泊費見積合計（円）<span class="req">*必須</span></label>
+            <input type="number" id="hotelFee" name="hotelFee" min="0" step="100" placeholder="0" required />
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label class="field-label" for="projectCode">負担プロジェクトコード<span class="req">*必須</span></label>
+            <input type="text" id="projectCode" name="projectCode" required placeholder="例：SKR-GEN-2026" />
+          </div>
+          <div class="field" style="display:flex;align-items:flex-end;">
+            <label class="check-row" for="urgentFlag" style="width:100%;">
+              <input type="checkbox" id="urgentFlag" name="urgentFlag" />
+              <span>⚡ 直前申請（出発3営業日以内・迅速承認依頼）</span>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2 class="card-title">📝 出張目的・備考メモ</h2>
+        <div class="field">
+          <label class="field-label" for="purposeMemo">出張目的・移動経路・備考メモ<span class="req">*必須</span></label>
+          <textarea id="purposeMemo" name="purposeMemo" rows="3" required placeholder="訪問先、移動経路、規定準拠メモを入力してください"></textarea>
+        </div>
+      </section>
+
+      <div class="actions">
+        <button type="reset" class="btn-reset" id="resetBtn">クリア</button>
+        <button type="submit" class="btn-submit">🌸 この内容で事前申請を提出する</button>
+      </div>
+
+      <div class="toast" id="submitToast"></div>
+    </form>
+  </main>
+
+  <script>
+    function recalcTotal() {
+      const fare = Number(document.getElementById("roundTripFare").value || 0);
+      const allowance = Number(document.getElementById("dailyAllowance").value || 0);
+      const hotel = Number(document.getElementById("hotelFee").value || 0);
+      const total = fare + allowance + hotel;
+      document.getElementById("grandTotalDisplay").textContent = "¥" + total.toLocaleString("ja-JP");
+    }
+
+    ["roundTripFare", "dailyAllowance", "hotelFee"].forEach((id) => {
+      const el = document.getElementById(id);
+      el.addEventListener("input", recalcTotal);
+      el.addEventListener("change", recalcTotal);
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      setTimeout(() => {
+        recalcTotal();
+        document.getElementById("submitToast").style.display = "none";
+      }, 10);
+    });
+
+    document.getElementById("sakuraExpenseForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      recalcTotal();
+      const toast = document.getElementById("submitToast");
+      const title = document.getElementById("tripTitle").value;
+      const total = document.getElementById("grandTotalDisplay").textContent;
+      const heading = document.createElement("strong");
+      heading.textContent = "申請を受け付けました（モック送信完了）";
+      const detail = document.createTextNode(
+        `件名：${title} ／ 概算合計：${total}（承認ワークフローへ回付されました）`
+      );
+      toast.replaceChildren(heading, document.createElement("br"), detail);
+      toast.style.display = "block";
+    });
+  </script>
+</body>
+</html>

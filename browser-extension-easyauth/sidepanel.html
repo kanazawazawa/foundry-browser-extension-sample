@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Foundry Form Copilot (Entra Easy Auth)</title>
+  <link rel="stylesheet" href="sidepanel.css" />
+</head>
+<body>
+  <header class="sp-header">
+    <div class="sp-brand">
+      <img src="icons/icon48.png" alt="" class="sp-logo" />
+      <div>
+        <div class="sp-title">Foundry Form Copilot <span class="edition-tag">Entra ID</span></div>
+        <div class="sp-subtitle" id="projectStatusText">認証状態を確認中...</div>
+      </div>
+    </div>
+    <button id="toggleSettingsBtn" class="icon-btn" title="接続先設定">⚙️</button>
+  </header>
+
+  <section id="settingsPanel" class="settings-panel hidden">
+    <div class="settings-field">
+      <label for="bridgeUrlInput">Easy Auth ブリッジ API URL</label>
+      <input type="text" id="bridgeUrlInput" placeholder="https://<your-bridge-entra>.azurewebsites.net" />
+    </div>
+    <div class="settings-field">
+      <label for="tenantIdInput">Entra テナント ID</label>
+      <input type="text" id="tenantIdInput" placeholder="00000000-0000-0000-0000-000000000000" />
+    </div>
+    <div class="settings-field">
+      <label for="clientIdInput">Entra クライアント ID (App ID)</label>
+      <div class="settings-row">
+        <input type="text" id="clientIdInput" placeholder="00000000-0000-0000-0000-000000000000" />
+        <button id="saveSettingsBtn" class="small-btn">保存</button>
+      </div>
+    </div>
+    <div class="redirect-hint" id="redirectUriHint"></div>
+  </section>
+
+  <!-- Microsoft Entra ID 認証ステータスバー / サインインカード -->
+  <section class="auth-section">
+    <div id="signedOutBox" class="auth-box signed-out">
+      <div class="auth-box-title">🔐 Microsoft Entra ID サインインが必要です</div>
+      <div class="auth-box-desc">
+        中継 API は <strong>Azure App Service Easy Auth</strong> で保護されています。組織アカウントでサインインしてください。
+      </div>
+      <button id="signInBtn" class="ms-signin-btn">
+        <span class="ms-squares" aria-hidden="true">
+          <i class="sq1"></i><i class="sq2"></i><i class="sq3"></i><i class="sq4"></i>
+        </span>
+        <span>Microsoft アカウントでサインイン</span>
+      </button>
+    </div>
+
+    <div id="signedInBox" class="auth-box signed-in hidden">
+      <div class="user-info">
+        <span class="auth-dot"></span>
+        <div class="user-texts">
+          <div class="user-name" id="signedInUserText">-</div>
+          <div class="user-sub">App Service Easy Auth (Bearer JWT) 認証有効</div>
+        </div>
+      </div>
+      <div class="auth-actions">
+        <button id="switchAccountBtn" class="mini-btn" title="別のアカウントでサインイン">切替</button>
+        <button id="signOutBtn" class="mini-btn" title="サインアウト">解除</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="control-card">
+    <div class="control-header">
+      <label for="agentSelect">🤖 接続先 Foundry Agent</label>
+      <button id="refreshAgentsBtn" class="text-btn" title="FoundryからAgent一覧を再取得">🔄 再取得</button>
+    </div>
+    <select id="agentSelect" disabled>
+      <option value="">サインイン後に読み込まれます</option>
+    </select>
+    <div class="agent-meta" id="agentMetaText">サインインするとエージェント一覧を取得します</div>
+
+    <div class="tab-inspector">
+      <div class="tab-info">
+        <span class="dot" id="tabScanDot"></span>
+        <span id="tabSummaryText">アクティブなタブを解析中...</span>
+      </div>
+      <button id="rescanBtn" class="text-btn">再スキャン</button>
+    </div>
+    <details id="fieldsPreviewBox" class="fields-preview">
+      <summary>検出されたフォーム項目一覧を表示</summary>
+      <ul id="fieldsPreviewList"></ul>
+    </details>
+  </section>
+
+  <main id="chatContainer" class="chat-container">
+    <div class="welcome-card">
+      <div class="welcome-title">業務画面 AI 支援（Entra Easy Auth + Work IQ）</div>
+      <p>
+        サインイン中ユーザーの権限で <strong>Work IQ（予定表・メール）</strong> と <strong>File Search（社内規程・手引）</strong> を参照し、開いている業務画面への起票を支援します。
+      </p>
+      <div class="chips-label">入力例（クリックで入力欄へ）：</div>
+      <div class="chips">
+        <button class="chip" data-prompt="明日の予定にある出張の申請を作成してください">明日の予定にある出張の申請を作成してください</button>
+        <button class="chip" data-prompt="明日、大阪へ出張します">明日、大阪へ出張します</button>
+        <button class="chip" data-prompt="1泊2日に変更してください">1泊2日に変更してください</button>
+        <button class="chip" data-prompt="明後日、名古屋へ日帰り出張します">明後日、名古屋へ日帰り出張します</button>
+      </div>
+    </div>
+  </main>
+
+  <footer class="composer">
+    <div class="composer-toolbar">
+      <span id="convBadge" class="conv-badge">新規会話</span>
+      <button id="resetConvBtn" class="text-btn">🗑 会話をリセット</button>
+    </div>
+    <form id="chatForm" class="composer-row">
+      <textarea
+        id="promptInput"
+        rows="2"
+        placeholder="例：明日、大阪へ出張します（Enterで送信 / Shift+Enterで改行）"
+      ></textarea>
+      <button type="submit" id="sendBtn" class="send-btn">送信</button>
+    </form>
+  </footer>
+
+  <script src="sidepanel.js"></script>
+</body>
+</html>

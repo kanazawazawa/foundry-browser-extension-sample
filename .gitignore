@@ -1,0 +1,16 @@
+# Python
+.venv/
+agent-backend/.venv/
+__pycache__/
+*.pyc
+
+# Environment & local deployment state
+.env
+agent-backend/.env
+browser-extension/config.local.json
+browser-extension-easyauth/config.local.json
+infra/*.local.bicepparam
+
+# Internal notes & artifacts
+NOTES.md
+*.zip

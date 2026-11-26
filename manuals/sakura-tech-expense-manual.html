@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>株式会社さくらテック 国内出張・経費申請ガイドライン（Sakura Expense 入力マニュアル）</title>
+  <style>
+    body {
+      font-family: "Segoe UI", "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+      max-width: 960px;
+      margin: 32px auto;
+      padding: 0 24px 64px;
+      color: #1f2937;
+      line-height: 1.7;
+      background: #fdf8fa;
+    }
+    header {
+      background: linear-gradient(135deg, #db2777, #7c3aed);
+      color: #fff;
+      padding: 28px 32px;
+      border-radius: 16px;
+      margin-bottom: 28px;
+    }
+    header .badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+    h1 { margin: 0 0 8px; font-size: 24px; }
+    h2 {
+      color: #be185d;
+      border-left: 5px solid #db2777;
+      padding-left: 12px;
+      margin-top: 32px;
+    }
+    section {
+      background: #fff;
+      border: 1px solid #f3e8ff;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      font-size: 14px;
+    }
+    th, td {
+      border: 1px solid #e5e7eb;
+      padding: 10px 12px;
+      text-align: left;
+    }
+    th {
+      background: #fdf2f8;
+      color: #9d174d;
+    }
+    code {
+      background: #f3f4f6;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: Consolas, monospace;
+      color: #be185d;
+    }
+    .note {
+      background: #fffbeb;
+      border-left: 4px solid #f59e0b;
+      padding: 12px 16px;
+      border-radius: 6px;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="badge">社内規定文書番号：SKR-FIN-2026-04（改定第4版）</div>
+    <h1>株式会社さくらテック 国内出張・経費申請ガイドライン</h1>
+    <p style="margin:0;opacity:0.92;">対象システム：クラウド経費申請システム「Sakura Expense」事前申請フォーム</p>
+  </header>
+
+  <section>
+    <h2>第1条 基本ルール（出発駅・期間・申請区分）</h2>
+    <ul>
+      <li><strong>標準出発駅：</strong>東京本社（品川シーズンテラス）勤務者の標準出発駅は <strong>「品川駅」</strong> とする。航空機利用エリア（福岡・札幌等）の場合のみ標準出発地を <strong>「羽田空港」</strong> とする。</li>
+      <li><strong>宿泊指定がない場合のデフォルト（日帰り原則）：</strong>利用者から「明日、大阪へ出張します」のように宿泊数の明示がない場合は、原則として <strong>日帰り出張</strong> として起票する。
+        <ul>
+          <li>申請区分：<code>国内出張（日帰り）</code>（システム値：<code>domestic_day</code>）</li>
+          <li>出発日と帰着日：同じ日付（例：翌日）を入力</li>
+          <li>宿泊費見積：<code>0</code> 円</li>
+        </ul>
+      </li>
+      <li><strong>宿泊を伴う場合：</strong>「1泊2日」「2泊3日」「泊まりで」等の指定がある場合は、申請区分を <code>国内出張（宿泊あり）</code>（システム値：<code>domestic_stay</code>）とし、帰着日には「出発日＋宿泊数」の日付を設定する。</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>第2条 出張エリア別の標準訪問先・交通手段・標準金額テーブル</h2>
+    <p>訪問先の個別社名指定がない場合は、下表の「標準訪問先拠点」を選択し、定められた交通手段・往復標準交通費・日当・宿泊上限額を入力すること。</p>
+    <table>
+      <thead>
+        <tr>
+          <th>出張エリア</th>
+          <th>標準訪問先拠点（選択肢）</th>
+          <th>主要交通手段</th>
+          <th>EX予約法人カード</th>
+          <th>往復標準交通費（税込）</th>
+          <th>日当（日帰り1日）</th>
+          <th>日当（宿泊時・1日あたり）</th>
+          <th>宿泊費上限（1泊あたり）</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>大阪・関西</strong></td>
+          <td>関西支社・梅田（<code>osaka_branch</code>）</td>
+          <td>新幹線・普通車指定席（<code>shinkansen_reserved</code>）</td>
+          <td><strong>利用する（ON / true）</strong></td>
+          <td><strong>28,340円</strong>（品川⇔新大阪 EX法人往復）</td>
+          <td><strong>3,500円</strong></td>
+          <td><strong>4,000円</strong> × 日数</td>
+          <td><strong>13,500円</strong> × 泊数</td>
+        </tr>
+        <tr>
+          <td><strong>名古屋・中部</strong></td>
+          <td>中部営業所・栄（<code>nagoya_office</code>）</td>
+          <td>新幹線・普通車指定席（<code>shinkansen_reserved</code>）</td>
+          <td><strong>利用する（ON / true）</strong></td>
+          <td><strong>22,180円</strong>（品川⇔名古屋 EX法人往復）</td>
+          <td><strong>3,000円</strong></td>
+          <td><strong>3,500円</strong> × 日数</td>
+          <td><strong>12,000円</strong> × 泊数</td>
+        </tr>
+        <tr>
+          <td><strong>福岡・九州</strong></td>
+          <td>九州ハブ・博多（<code>fukuoka_hub</code>）</td>
+          <td>航空機・エコノミー（<code>flight_economy</code>）</td>
+          <td>利用しない（OFF / false）</td>
+          <td><strong>46,800円</strong>（羽田⇔福岡 法人特約往復）</td>
+          <td><strong>4,500円</strong></td>
+          <td><strong>5,000円</strong> × 日数</td>
+          <td><strong>14,000円</strong> × 泊数</td>
+        </tr>
+        <tr>
+          <td><strong>札幌・北海道</strong></td>
+          <td>北海道営業所・札幌（<code>sapporo_office</code>）</td>
+          <td>航空機・エコノミー（<code>flight_economy</code>）</td>
+          <td>利用しない（OFF / false）</td>
+          <td><strong>49,200円</strong>（羽田⇔新千歳 法人特約往復）</td>
+          <td><strong>4,500円</strong></td>
+          <td><strong>5,000円</strong> × 日数</td>
+          <td><strong>14,500円</strong> × 泊数</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="note">
+      <strong>特例（グリーン車規定）：</strong>申請者が「役員」または「本部長」と明示された場合に限り、新幹線は <code>新幹線・グリーン車（shinkansen_green）</code> を選択可。その場合の品川⇔新大阪 往復標準交通費は <strong>38,140円</strong> とする。一般社員は必ず普通車指定席を選択すること。
+    </div>
+  </section>
+
+  <section>
+    <h2>第3条 負担プロジェクトコード規則</h2>
+    <p>負担プロジェクトコード欄（<code>projectCode</code>）には、目的に応じて以下のいずれかのコードを入力する。</p>
+    <table>
+      <thead>
+        <tr>
+          <th>出張の目的・ケース</th>
+          <th>入力するプロジェクトコード</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>特定の案件指定がない通常出張・支社訪問・社内打合せ（デフォルト）</td>
+          <td><code>SKR-GEN-2026</code></td>
+        </tr>
+        <tr>
+          <td>顧客への新規営業・商談・提案活動と明示された場合</td>
+          <td><code>SKR-SALES-101</code></td>
+        </tr>
+        <tr>
+          <td>採用イベント・面接・人事関連業務の場合</td>
+          <td><code>SKR-HR-202</code></td>
+        </tr>
+        <tr>
+          <td>技術検証・システム導入支援・研究開発目的の場合</td>
+          <td><code>SKR-RND-303</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>第4条 件名・直前申請チェック・備考欄フォーマット</h2>
+    <ul>
+      <li><strong>申請タイトル（件名）：</strong>
+        <ul>
+          <li>日帰りの場合：<code>【出張申請】関西支社・大阪出張（YYYY/MM/DD）</code> のように <code>【出張申請】&lt;行先&gt;（日付）</code> 形式で記載する。</li>
+          <li>宿泊の場合：<code>【出張申請】&lt;行先&gt;（YYYY/MM/DD〜MM/DD）</code> 形式で記載する。</li>
+        </ul>
+      </li>
+      <li><strong>直前申請（出発3営業日以内）フラグ（<code>urgentFlag</code>）：</strong>
+        出発日が申請日当日または翌日（「今日」「明日」「あした」等）に該当する場合は、<strong>直前申請チェックボックスを必ず ON（<code>true</code>）</strong> にすること。4日以上先の出張であれば OFF（<code>false</code>）とする。
+      </li>
+      <li><strong>出張目的・備考メモ（<code>purposeMemo</code>）の標準記載テンプレート：</strong>
+        <br />
+        <code>訪問先：&lt;訪問先拠点名&gt; ／ 移動経路：&lt;出発駅・空港&gt;⇔&lt;到着駅・空港&gt;（社内規定 SKR-FIN-2026-04 準拠）</code>
+        <br />
+        ※直前申請（当日・翌日出発）の場合は、備考欄の末尾に必ず <strong>「※出発直前のため迅速承認をお願いいたします。」</strong> を追記すること。
+      </li>
+    </ul>
+  </section>
+</body>
+</html>
